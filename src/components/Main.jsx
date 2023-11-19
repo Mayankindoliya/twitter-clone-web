@@ -1,16 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import Tweet from './Tweet'
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
+import {logout} from '../redux/action'
+import { useNavigate } from 'react-router-dom';
 
 const Main = () => {
   const [tweet, setTweet] = useState('');
   const [tweets, setTweets] = useState([]);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const {token} = useSelector(state => state.user);
 
   const onsubmit = (event) => {
+    if (!tweet.trim()) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Please write some tweet'
+      })
+      return
+    }
     axios.post('http://localhost:4000/tweets', {
       description: tweet
     }, {
@@ -27,7 +39,7 @@ const Main = () => {
     }).catch(err => {
       Swal.fire({
         icon: 'error',
-        title: err.response.message || 'something went wrong'
+        title: err.response.data.message || 'something went wrong'
       })
     })
   }
@@ -40,9 +52,13 @@ const Main = () => {
     }).then(result => {
         setTweets(result.data.data)
     }).catch(err => {
+      if (err.response.status === 401) {
+        dispatch(logout());
+        navigate('/login')
+      }
       Swal.fire({
         icon: 'error',
-        title: err.response.message || 'something went wrong'
+        title: err.response.data.message || 'something went wrong'
       })
     })
   }
@@ -65,7 +81,7 @@ const Main = () => {
         <div className="col pt-2 ">
           <div className="row">
             <div className="col-2">
-              <img className="rounded-circle" src="/profile.jfif" alt="" height="50px" />
+              <img className="rounded-circle" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHdpbnRlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="" height="50px" />
             </div>
             <div className="col-9 col-sm-10 ">
               <input className="border-0 bg  form-control-lg" type="text" placeholder="What's happening?" 
@@ -88,18 +104,6 @@ const Main = () => {
                     onClick={onsubmit}>Tweet</button>
                 </div>
               </div>
-
-
-            </div>
-          </div>
-          <div className="row  d-flex  justify-content-between align-items-center border">
-            <div className="col-11 col-sm-10 ps-5  pt-1 d-flex pt-2">
-              <span><i className="fa-solid fa-comment"></i></span>
-              <p className="ps-1">Bitcoin cryptocurrency. <span className="text-info fw-bold ">see
-                more</span></p>
-            </div>
-            <div className="col-1 col-sm-2 text-end fs-5 pt-2 ps-2">
-              <span><i className="fa-solid fa-xmark"></i></span>
             </div>
           </div>
         </div>

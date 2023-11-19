@@ -21,8 +21,7 @@ const Tweet = (props) => {
         return (
           <div className="row mt-1 border d-flex " key={tweet._id}>
             <div className="col-3 mt-2">
-
-              <img className="rounded-circle" src="/profile.jfif" alt="" height="50px" />
+              <img className="rounded-circle" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHdpbnRlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="" height="50px" />
             </div>
             <div className="col-9 ">
               <div className="row d-flex justify-content-between align-items-center ps-1">
